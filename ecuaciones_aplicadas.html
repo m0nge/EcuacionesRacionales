@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecuaciones Racionales — Problemas de Aplicación</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --muted: #7a7f94;
+    --accent1: #4fffb0;
+    --accent2: #ff6b6b;
+    --accent3: #ffd166;
+    --accent4: #74b9ff;
+    --accent5: #a29bfe;
+    --easy: #4fffb0;
+    --med: #ffd166;
+    --hard: #ff6b6b;
+    --expert: #a29bfe;
+    --boss: #ff4fd8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* BG GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 64px; }
+  .header-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    border: 1px solid rgba(79,255,176,0.3);
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--accent1); }
+  .header-desc {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  /* DIFFICULTY LEGEND */
+  .legend {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  /* EXERCISE CARD */
+  .exercise {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+    animation: slideUp 0.5s ease both;
+  }
+  .exercise:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .exercise:nth-child(1) { animation-delay: 0.05s; }
+  .exercise:nth-child(2) { animation-delay: 0.12s; }
+  .exercise:nth-child(3) { animation-delay: 0.19s; }
+  .exercise:nth-child(4) { animation-delay: 0.26s; }
+  .exercise:nth-child(5) { animation-delay: 0.33s; }
+
+  /* COLOR ACCENT LINE */
+  .exercise[data-diff="facil"]   { border-top: 2px solid var(--easy); }
+  .exercise[data-diff="medio"]   { border-top: 2px solid var(--med); }
+  .exercise[data-diff="dificil"] { border-top: 2px solid var(--hard); }
+  .exercise[data-diff="experto"] { border-top: 2px solid var(--expert); }
+  .exercise[data-diff="boss"]    { border-top: 2px solid var(--boss); }
+
+  .ex-header {
+    padding: 22px 28px 18px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .ex-header-left { display: flex; align-items: flex-start; gap: 16px; flex: 1; }
+  .ex-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    min-width: 28px;
+    padding-top: 3px;
+  }
+  .ex-titles { flex: 1; }
+  .ex-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .ex-context {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .diff-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  [data-diff="facil"]   .diff-badge { background: rgba(79,255,176,0.1);  color: var(--easy); }
+  [data-diff="medio"]   .diff-badge { background: rgba(255,209,102,0.1); color: var(--med); }
+  [data-diff="dificil"] .diff-badge { background: rgba(255,107,107,0.1); color: var(--hard); }
+  [data-diff="experto"] .diff-badge { background: rgba(162,155,254,0.1); color: var(--expert); }
+  [data-diff="boss"]    .diff-badge { background: rgba(255,79,216,0.1);  color: var(--boss); }
+
+  .toggle-icon {
+    color: var(--muted);
+    font-size: 20px;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .exercise.open .toggle-icon { transform: rotate(45deg); }
+
+  /* BODY */
+  .ex-body {
+    display: none;
+    padding: 0 28px 28px;
+  }
+  .exercise.open .ex-body { display: block; }
+
+  .problem-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #c8cad6;
+  }
+  .problem-box strong { color: #fff; font-weight: 500; }
+
+  .questions { margin-bottom: 24px; }
+  .q-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .q-item:last-child { border-bottom: none; }
+  .q-letter {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--surface2);
+    color: var(--muted);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-text { font-size: 14px; color: #c8cad6; }
+
+  /* SOLUTION */
+  .solution-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 20px;
+  }
+  .solution-toggle:hover { border-color: var(--accent1); color: var(--accent1); }
+  .solution-toggle .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  .solution {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .solution.visible { display: block; }
+
+  .sol-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .step-block { margin-bottom: 20px; }
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent1);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  [data-diff="medio"]   .step-title { color: var(--med); }
+  [data-diff="dificil"] .step-title { color: var(--hard); }
+  [data-diff="experto"] .step-title { color: var(--expert); }
+  [data-diff="boss"]    .step-title { color: var(--boss); }
+
+  .step-num-badge {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(79,255,176,0.15);
+    color: var(--accent1);
+    font-size: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  [data-diff="medio"]   .step-num-badge { background: rgba(255,209,102,0.15); color: var(--med); }
+  [data-diff="dificil"] .step-num-badge { background: rgba(255,107,107,0.15); color: var(--hard); }
+  [data-diff="experto"] .step-num-badge { background: rgba(162,155,254,0.15); color: var(--expert); }
+  [data-diff="boss"]    .step-num-badge { background: rgba(255,79,216,0.15);  color: var(--boss); }
+
+  .step-content {
+    font-size: 14px;
+    color: #c8cad6;
+    line-height: 1.8;
+    padding-left: 28px;
+  }
+
+  .math {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    display: block;
+    color: #fff;
+    line-height: 1.6;
+  }
+
+  .answer-box {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  [data-diff="facil"]   .answer-box { background: rgba(79,255,176,0.08);  border-left: 3px solid var(--easy);   color: var(--easy); }
+  [data-diff="medio"]   .answer-box { background: rgba(255,209,102,0.08); border-left: 3px solid var(--med);    color: var(--med); }
+  [data-diff="dificil"] .answer-box { background: rgba(255,107,107,0.08); border-left: 3px solid var(--hard);   color: var(--hard); }
+  [data-diff="experto"] .answer-box { background: rgba(162,155,254,0.08); border-left: 3px solid var(--expert); color: var(--expert); }
+  [data-diff="boss"]    .answer-box { background: rgba(255,79,216,0.08);  border-left: 3px solid var(--boss);   color: var(--boss); }
+
+  .answer-box span { color: var(--text); font-weight: 400; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 60px;
+    font-family: 'DM Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-tag">Noveno Grado · Matemáticas</div>
+    <h1>Ecuaciones Racionales<br><span>en la Vida Real</span></h1>
+    <p class="header-desc">Cinco problemas de aplicación, del más sencillo al más desafiante. Hacé clic en cada uno para ver la solución.</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--easy)"></div> Fácil</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--med)"></div> Medio</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--hard)"></div> Difícil</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--expert)"></div> Experto</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--boss)"></div> Desafío final</div>
+  </div>
+
+  <!-- ===== EJERCICIO 1 ===== -->
+  <div class="exercise" data-diff="facil">
+    <div class="ex-header" onclick="toggle(this)">
+      <div class="ex-header-left">
+        <div class="ex-num">01</div>
+        <div class="ex-titles">
+          <div class="ex-title">Economía y Utilidad Marginal</div>
+          <div class="ex-context">Cooperativa de café en Ahuachapán</div>
+        </div>
+      </div>
+      <div class="diff-badge">Fácil</div>
+      <div class="toggle-icon">+</div>
+    </div>
+    <div class="ex-body">
+      <div class="problem-box">
+        En una cooperativa de café en Ahuachapán, la función de ingreso mensual está definida por <strong>R(x) = (x² + 7x + 10) / (x² − 4)</strong> y la función de costos operativos es <strong>C(x) = x / (x + 3)</strong>, donde <em>x</em> representa la cantidad de quintales producidos (en cientos).
+      </div>
+      <div class="questions">
+        <div class="q-item">
+          <span class="q-letter">a</span>
+          <span class="q-text">Determine la función de utilidad simplificada P(x) = R(x) − C(x). <em>(Debe simplificar R(x) antes de restar).</em></span>
+        </div>
+        <div class="q-item">
+          <span class="q-letter">b</span>
+          <span class="q-text">Calcule la utilidad exacta cuando se producen 300 quintales (x = 3).</span>
+        </div>
+      </div>
+      <button class="solution-toggle" onclick="showSol(this)">
+        <span class="dot"></span> Ver solución completa
+      </button>
+      <div class="solution">
+        <div class="sol-label">Resolución paso a paso</div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">1</span> Factorizar R(x)</div>
+          <div class="step-content">
+            Factorizamos numerador y denominador:
+            <code class="math">x² + 7x + 10 = (x + 2)(x + 5)
+x² − 4 = (x + 2)(x − 2)</code>
+            Entonces:
+            <code class="math">R(x) = (x + 2)(x + 5) / (x + 2)(x − 2) = (x + 5) / (x − 2)  , con x ≠ −2</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">2</span> Calcular P(x) = R(x) − C(x)</div>
+          <div class="step-content">
+            <code class="math">P(x) = (x + 5)/(x − 2) − x/(x + 3)</code>
+            MCM = (x − 2)(x + 3):
+            <code class="math">P(x) = [(x+5)(x+3) − x(x−2)] / [(x−2)(x+3)]
+     = [x²+8x+15 − x²+2x] / [(x−2)(x+3)]
+     = (10x + 15) / [(x−2)(x+3)]
+     = 5(2x + 3) / [(x−2)(x+3)]</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">3</span> Evaluar en x = 3</div>
+          <div class="step-content">
+            <code class="math">P(3) = 5(6 + 3) / [(3−2)(3+3)]
+     = 5(9) / [1 · 6]
+     = 45 / 6
+     = 7.5</code>
+          </div>
+        </div>
+        <div class="answer-box">✦ Respuesta: <span>Cuando se producen 300 quintales, la utilidad de la cooperativa es <strong>$7.50</strong> (por cada cien quintales).</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EJERCICIO 2 ===== -->
+  <div class="exercise" data-diff="medio">
+    <div class="ex-header" onclick="toggle(this)">
+      <div class="ex-header-left">
+        <div class="ex-num">02</div>
+        <div class="ex-titles">
+          <div class="ex-title">Trabajo y Productividad</div>
+          <div class="ex-context">Andrea y Mateo digitalizando el instituto</div>
+        </div>
+      </div>
+      <div class="diff-badge">Medio</div>
+      <div class="toggle-icon">+</div>
+    </div>
+    <div class="ex-body">
+      <div class="problem-box">
+        Andrea y Mateo deben digitalizar las notas del instituto. Andrea puede hacerlo sola en <strong>x horas</strong>. Mateo tarda exactamente <strong>5 horas más</strong> que Andrea en hacer el mismo trabajo solo. Si deciden trabajar juntos, terminan en <strong>6 horas exactas</strong>.
+      </div>
+      <div class="questions">
+        <div class="q-item">
+          <span class="q-letter">a</span>
+          <span class="q-text">Planteá una ecuación racional que represente la suma de sus capacidades de trabajo por hora.</span>
+        </div>
+        <div class="q-item">
+          <span class="q-letter">b</span>
+          <span class="q-text">Resolvé la ecuación y determiná cuántas horas tarda cada uno solo.</span>
+        </div>
+      </div>
+      <button class="solution-toggle" onclick="showSol(this)">
+        <span class="dot"></span> Ver solución completa
+      </button>
+      <div class="solution">
+        <div class="sol-label">Resolución paso a paso</div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">1</span> Plantear la ecuación</div>
+          <div class="step-content">
+            En 1 hora, Andrea hace 1/x del trabajo; Mateo hace 1/(x+5) del trabajo. Juntos completan 1/6 del trabajo por hora:
+            <code class="math">1/x + 1/(x+5) = 1/6</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">2</span> Eliminar denominadores</div>
+          <div class="step-content">
+            MCM = 6x(x+5). Multiplicamos todo:
+            <code class="math">6(x+5) + 6x = x(x+5)
+6x + 30 + 6x = x² + 5x
+12x + 30 = x² + 5x
+0 = x² − 7x − 30</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">3</span> Resolver la cuadrática</div>
+          <div class="step-content">
+            Factorizamos:
+            <code class="math">0 = (x − 10)(x + 3)</code>
+            x = 10 ó x = −3. Como el tiempo no puede ser negativo, <strong>x = 10</strong>.
+          </div>
+        </div>
+        <div class="answer-box">✦ Respuesta: <span>Andrea tarda <strong>10 horas</strong> sola y Mateo tarda <strong>15 horas</strong> solo. Juntos terminan en 6 horas.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EJERCICIO 3 ===== -->
+  <div class="exercise" data-diff="dificil">
+    <div class="ex-header" onclick="toggle(this)">
+      <div class="ex-header-left">
+        <div class="ex-num">03</div>
+        <div class="ex-titles">
+          <div class="ex-title">Velocidad y Distancia</div>
+          <div class="ex-context">Viaje entre San Salvador y Santa Ana</div>
+        </div>
+      </div>
+      <div class="diff-badge">Difícil</div>
+      <div class="toggle-icon">+</div>
+    </div>
+    <div class="ex-body">
+      <div class="problem-box">
+        Un bus recorre los <strong>65 km</strong> entre San Salvador y Santa Ana. En el viaje de regreso, por el tráfico, va <strong>15 km/h más lento</strong> que a la ida. El viaje de regreso tarda <strong>30 minutos más</strong> que el de ida.
+      </div>
+      <div class="questions">
+        <div class="q-item">
+          <span class="q-letter">a</span>
+          <span class="q-text">Planteá la ecuación usando la fórmula tiempo = distancia / velocidad.</span>
+        </q-item>
+        <div class="q-item">
+          <span class="q-letter">b</span>
+          <span class="q-text">¿A qué velocidad iba el bus en cada trayecto?</span>
+        </div>
+      </div>
+      <button class="solution-toggle" onclick="showSol(this)">
+        <span class="dot"></span> Ver solución completa
+      </button>
+      <div class="solution">
+        <div class="sol-label">Resolución paso a paso</div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">1</span> Definir variables y plantear</div>
+          <div class="step-content">
+            Sea <em>v</em> = velocidad de ida (km/h). Velocidad de regreso = v − 15. Tiempo = distancia/velocidad. La diferencia es 30 min = 1/2 hora:
+            <code class="math">65/(v−15) − 65/v = 1/2</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">2</span> Eliminar denominadores</div>
+          <div class="step-content">
+            MCM = 2v(v−15):
+            <code class="math">2v(65) − 2(v−15)(65) = v(v−15)
+130v − 130v + 1950 = v² − 15v
+1950 = v² − 15v
+v² − 15v − 1950 = 0</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">3</span> Fórmula cuadrática</div>
+          <div class="step-content">
+            <code class="math">v = (15 ± √(225 + 7800)) / 2
+v = (15 ± √8025) / 2
+v = (15 ± 89.6) / 2</code>
+            Tomamos el valor positivo: v ≈ (15 + 89.6) / 2 ≈ <strong>52.3 km/h</strong>
+          </div>
+        </div>
+        <div class="answer-box">✦ Respuesta: <span>El bus iba a <strong>≈52.3 km/h</strong> a la ida y <strong>≈37.3 km/h</strong> al regreso.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EJERCICIO 4 ===== -->
+  <div class="exercise" data-diff="experto">
+    <div class="ex-header" onclick="toggle(this)">
+      <div class="ex-header-left">
+        <div class="ex-num">04</div>
+        <div class="ex-titles">
+          <div class="ex-title">Mezcla y Concentración</div>
+          <div class="ex-context">Fábrica de jugo de maracuyá en Sonsonate</div>
+        </div>
+      </div>
+      <div class="diff-badge">Experto</div>
+      <div class="toggle-icon">+</div>
+    </div>
+    <div class="ex-body">
+      <div class="problem-box">
+        Una fábrica tiene un tanque con <strong>200 litros</strong> de jugo al <strong>30% de concentración</strong> de maracuyá pura. Se desea agregar <strong>x litros</strong> de jugo puro al 100% para elevar la concentración hasta el <strong>50%</strong>.
+      </div>
+      <div class="questions">
+        <div class="q-item">
+          <span class="q-letter">a</span>
+          <span class="q-text">Planteá la ecuación racional usando: concentración = maracuyá pura / total de litros.</span>
+        </div>
+        <div class="q-item">
+          <span class="q-letter">b</span>
+          <span class="q-text">¿Cuántos litros de jugo puro se deben agregar?</span>
+        </div>
+        <div class="q-item">
+          <span class="q-letter">c</span>
+          <span class="q-text">¿Cuánto vale la función de concentración C(x) si se agregan 100 litros? ¿Alcanza el 50%?</span>
+        </div>
+      </div>
+      <button class="solution-toggle" onclick="showSol(this)">
+        <span class="dot"></span> Ver solución completa
+      </button>
+      <div class="solution">
+        <div class="sol-label">Resolución paso a paso</div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">1</span> Plantear la ecuación</div>
+          <div class="step-content">
+            Maracuyá inicial: 200 × 0.30 = 60 litros puros. Al agregar x litros puros:
+            <code class="math">C(x) = (60 + x) / (200 + x) = 0.50</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">2</span> Resolver</div>
+          <div class="step-content">
+            Multiplicamos ambos lados por (200 + x):
+            <code class="math">60 + x = 0.5(200 + x)
+60 + x = 100 + 0.5x
+0.5x = 40
+x = 80</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">3</span> Verificar con x = 100</div>
+          <div class="step-content">
+            <code class="math">C(100) = (60 + 100) / (200 + 100) = 160/300 ≈ 0.533 = 53.3%</code>
+            Con 100 litros la concentración sería 53.3%, que sí supera el 50%.
+          </div>
+        </div>
+        <div class="answer-box">✦ Respuesta: <span>Se deben agregar exactamente <strong>80 litros</strong> de jugo puro para alcanzar el 50% de concentración.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EJERCICIO 5 ===== -->
+  <div class="exercise" data-diff="boss">
+    <div class="ex-header" onclick="toggle(this)">
+      <div class="ex-header-left">
+        <div class="ex-num">05</div>
+        <div class="ex-titles">
+          <div class="ex-title">Inversión y Rendimiento</div>
+          <div class="ex-context">Microempresa familiar — Desafío Final 🔥</div>
+        </div>
+      </div>
+      <div class="diff-badge">Desafío final</div>
+      <div class="toggle-icon">+</div>
+    </div>
+    <div class="ex-body">
+      <div class="problem-box">
+        Una microempresa familiar invierte en dos proyectos. El proyecto A genera una ganancia de <strong>$1200 / x</strong> dólares, donde x es el tiempo en meses. El proyecto B genera <strong>$800 / (x − 2)</strong> dólares en el mismo periodo. La empresa necesita que la <strong>ganancia combinada sea exactamente $500 al mes</strong>. Además, saben que el proyecto A siempre rinde <strong>$1 más por mes</strong> que el proyecto B.
+      </div>
+      <div class="questions">
+        <div class="q-item">
+          <span class="q-letter">a</span>
+          <span class="q-text">Planteá el sistema de ecuaciones racionales que representa la situación.</span>
+        </div>
+        <div class="q-item">
+          <span class="q-letter">b</span>
+          <span class="q-text">Resolvé para encontrar x (el tiempo en meses).</span>
+        </div>
+        <div class="q-item">
+          <span class="q-letter">c</span>
+          <span class="q-text">Verificá que la solución no genere denominadores iguales a cero e interpretá el resultado en contexto.</span>
+        </div>
+      </div>
+      <button class="solution-toggle" onclick="showSol(this)">
+        <span class="dot"></span> Ver solución completa
+      </button>
+      <div class="solution">
+        <div class="sol-label">Resolución paso a paso</div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">1</span> Plantear el sistema</div>
+          <div class="step-content">
+            <code class="math">Ecuación 1: 1200/x + 800/(x−2) = 500
+Ecuación 2: 1200/x − 800/(x−2) = 1</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">2</span> Sumar ambas ecuaciones</div>
+          <div class="step-content">
+            Sumando Ec.1 + Ec.2:
+            <code class="math">2400/x = 501
+x = 2400/501 ≈ 4.79 meses</code>
+          </div>
+        </div>
+        <div class="step-block">
+          <div class="step-title"><span class="step-num-badge">3</span> Encontrar el valor exacto y verificar</div>
+          <div class="step-content">
+            x = 2400/501. Verificamos restricciones: x ≠ 0 ✓ y x ≠ 2 (2400/501 ≈ 4.79 ≠ 2) ✓
+            <code class="math">1200/(2400/501) = 1200 × 501/2400 = 250.5
+800/(2400/501 − 2) = 800 × 501/1398 ≈ 286.6
+Ganancia A − Ganancia B ≈ 250.5 − 249.5 = 1 ✓</code>
+          </div>
+        </div>
+        <div class="answer-box">✦ Respuesta: <span>El periodo óptimo de inversión es <strong>x = 2400/501 ≈ 4.79 meses</strong> (aproximadamente 4 meses y 24 días). En ese tiempo, ambas condiciones se cumplen simultáneamente.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Ecuaciones Racionales · Problemas de Aplicación · Noveno Grado</footer>
+
+</div>
+
+<script>
+  function toggle(header) {
+    const ex = header.closest('.exercise');
+    ex.classList.toggle('open');
+  }
+  function showSol(btn) {
+    const sol = btn.nextElementSibling;
+    sol.classList.toggle('visible');
+    btn.querySelector('span:last-child') && (btn.lastChild.textContent = sol.classList.contains('visible') ? ' Ocultar solución' : ' Ver solución completa');
+    if (sol.classList.contains('visible')) {
+      btn.style.borderColor = 'var(--accent1)';
+      btn.style.color = 'var(--accent1)';
+    } else {
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }
+  }
+</script>
+</body>
+</html>
